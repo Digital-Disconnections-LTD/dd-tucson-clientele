@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tucson Prospect Viewer — Digital Disconnections</title>
+<style>
+:root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #60a5fa;
+    --score-1: #dc2626;
+    --score-2: #ea580c;
+    --score-3: #ca8a04;
+    --score-4: #65a30d;
+    --danger-bg: #451a1a;
+    --danger-border: #991b1b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+
+.subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+.back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.summary-card .number { font-size: 2rem; font-weight: 700; line-height: 1.2; }
+.summary-card .label {
+    font-size: 0.8rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.hood-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.hood-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    transition: background 0.15s;
+}
+.hood-card:hover { background: var(--surface-hover); }
+.hood-card h2 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+.hood-card h2 a { color: var(--text); }
+.hood-card h2 a:hover { color: var(--accent); }
+
+.hood-stats { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-score-1 { background: rgba(220,38,38,0.2); color: #fca5a5; }
+.badge-score-2 { background: rgba(234,88,12,0.2); color: #fdba74; }
+.badge-score-3 { background: rgba(202,138,4,0.2); color: #fde047; }
+.badge-score-4 { background: rgba(101,163,13,0.2); color: #bef264; }
+
+.table-wrap {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+th {
+    background: var(--surface);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+}
+
+td {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+}
+
+tr:hover td { background: var(--surface-hover); }
+
+tr.score-1 td { border-left: 3px solid var(--score-1); }
+tr.score-2 td { border-left: 3px solid var(--score-2); }
+tr.score-1 td:first-child, tr.score-2 td:first-child { padding-left: calc(1rem - 3px); }
+
+tr.dangerous td { background: var(--danger-bg); }
+tr.dangerous:hover td { background: #5c2121; }
+
+.score-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+}
+
+.domain-tag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.domain-none { background: rgba(148,163,184,0.2); color: #94a3b8; }
+.domain-active { background: rgba(101,163,13,0.2); color: #bef264; }
+.domain-danger { background: rgba(220,38,38,0.3); color: #fca5a5; border: 1px solid var(--danger-border); }
+.domain-warn { background: rgba(234,88,12,0.2); color: #fdba74; }
+
+.legend {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.legend h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.legend-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.5rem;
+}
+
+.legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+
+.pain-text { font-size: 0.8rem; color: var(--text-muted); max-width: 350px; }
+
+footer {
+    margin-top: 3rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--text-muted); text-align: center;
+}
+
+@media (max-width: 640px) {
+    body { padding: 1rem; }
+    h1 { font-size: 1.35rem; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .hood-list { grid-template-columns: 1fr; }
+    td, th { padding: 0.5rem; font-size: 0.8rem; }
+    .pain-text { max-width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<h1>Tucson Prospect Viewer</h1>
+<p class="subtitle">Digital Disconnections — 1110 prospects across 5 neighborhoods</p>
+
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="number">1110</div>
+        <div class="label">Total Prospects</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-1)">263</div>
+        <div class="label">Score 1 (Critical)</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-2)">847</div>
+        <div class="label">Score 2 (Urgent)</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-3)">0</div>
+        <div class="label">Score 3 (Moderate)</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-4)">0</div>
+        <div class="label">Score 4 (Low)</div>
+    </div>
+    <div class="summary-card">
+        <div class="number">5</div>
+        <div class="label">Neighborhoods</div>
+    </div>
+</div>
+
+<div class="legend">
+    <h3>Scoring Rubric</h3>
+    <div class="legend-items">
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-1)"></span> <strong>Score 1 — Critical:</strong> No website, hijacked domain, or dangerous redirect</div>
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-2)"></span> <strong>Score 2 — Urgent:</strong> Expired SSL, dead domain, server down, or broken site</div>
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-3)"></span> <strong>Score 3 — Moderate:</strong> Outdated site, neglected content, or visibly stale</div>
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-4)"></span> <strong>Score 4 — Low:</strong> Generic template or minor issues but functional</div>
+    </div>
+</div>
+
+<h2 style="margin-bottom:1rem">Neighborhoods</h2>
+<div class="hood-list">
+
+        <div class="hood-card">
+            <h2><a href="casas-adobes.html">Casas Adobes</a></h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem">301 prospects</p>
+            <div class="hood-stats"><span class="badge badge-score-1">66 score-1</span><span class="badge badge-score-2">235 score-2</span></div>
+        </div>
+        <div class="hood-card">
+            <h2><a href="catalina-foothills.html">Catalina Foothills</a></h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem">143 prospects</p>
+            <div class="hood-stats"><span class="badge badge-score-1">20 score-1</span><span class="badge badge-score-2">123 score-2</span></div>
+        </div>
+        <div class="hood-card">
+            <h2><a href="oro-valley.html">Oro Valley</a></h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem">202 prospects</p>
+            <div class="hood-stats"><span class="badge badge-score-1">46 score-1</span><span class="badge badge-score-2">156 score-2</span></div>
+        </div>
+        <div class="hood-card">
+            <h2><a href="sam-hughes-university.html">Sam Hughes / University</a></h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem">362 prospects</p>
+            <div class="hood-stats"><span class="badge badge-score-1">99 score-1</span><span class="badge badge-score-2">263 score-2</span></div>
+        </div>
+        <div class="hood-card">
+            <h2><a href="tanque-verde-sabino.html">Tanque Verde / Sabino Canyon</a></h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem">102 prospects</p>
+            <div class="hood-stats"><span class="badge badge-score-1">32 score-1</span><span class="badge badge-score-2">70 score-2</span></div>
+        </div>
+</div>
+
+<footer>Generated from master-prospects.csv &middot; Digital Disconnections Ltd</footer>
+</body>
+</html>

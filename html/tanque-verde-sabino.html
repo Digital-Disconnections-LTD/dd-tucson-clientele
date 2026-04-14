@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tanque Verde / Sabino Canyon — Tucson Prospect Viewer</title>
+<style>
+:root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #60a5fa;
+    --score-1: #dc2626;
+    --score-2: #ea580c;
+    --score-3: #ca8a04;
+    --score-4: #65a30d;
+    --danger-bg: #451a1a;
+    --danger-border: #991b1b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+
+.subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+.back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.summary-card .number { font-size: 2rem; font-weight: 700; line-height: 1.2; }
+.summary-card .label {
+    font-size: 0.8rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.hood-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.hood-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    transition: background 0.15s;
+}
+.hood-card:hover { background: var(--surface-hover); }
+.hood-card h2 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+.hood-card h2 a { color: var(--text); }
+.hood-card h2 a:hover { color: var(--accent); }
+
+.hood-stats { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-score-1 { background: rgba(220,38,38,0.2); color: #fca5a5; }
+.badge-score-2 { background: rgba(234,88,12,0.2); color: #fdba74; }
+.badge-score-3 { background: rgba(202,138,4,0.2); color: #fde047; }
+.badge-score-4 { background: rgba(101,163,13,0.2); color: #bef264; }
+
+.table-wrap {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+th {
+    background: var(--surface);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+}
+
+td {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+}
+
+tr:hover td { background: var(--surface-hover); }
+
+tr.score-1 td { border-left: 3px solid var(--score-1); }
+tr.score-2 td { border-left: 3px solid var(--score-2); }
+tr.score-1 td:first-child, tr.score-2 td:first-child { padding-left: calc(1rem - 3px); }
+
+tr.dangerous td { background: var(--danger-bg); }
+tr.dangerous:hover td { background: #5c2121; }
+
+.score-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+}
+
+.domain-tag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.domain-none { background: rgba(148,163,184,0.2); color: #94a3b8; }
+.domain-active { background: rgba(101,163,13,0.2); color: #bef264; }
+.domain-danger { background: rgba(220,38,38,0.3); color: #fca5a5; border: 1px solid var(--danger-border); }
+.domain-warn { background: rgba(234,88,12,0.2); color: #fdba74; }
+
+.legend {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.legend h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.legend-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.5rem;
+}
+
+.legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+
+.pain-text { font-size: 0.8rem; color: var(--text-muted); max-width: 350px; }
+
+footer {
+    margin-top: 3rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--text-muted); text-align: center;
+}
+
+@media (max-width: 640px) {
+    body { padding: 1rem; }
+    h1 { font-size: 1.35rem; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .hood-list { grid-template-columns: 1fr; }
+    td, th { padding: 0.5rem; font-size: 0.8rem; }
+    .pain-text { max-width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">&larr; All Neighborhoods</a>
+
+<h1>Tanque Verde / Sabino Canyon</h1>
+<p class="subtitle">102 prospects</p>
+
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="number">102</div>
+        <div class="label">Total</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-1)">32</div>
+        <div class="label">Critical</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-2)">70</div>
+        <div class="label">Urgent</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-3)">0</div>
+        <div class="label">Moderate</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:var(--score-4)">0</div>
+        <div class="label">Low</div>
+    </div>
+</div>
+
+<div class="legend">
+    <h3>Scoring Rubric</h3>
+    <div class="legend-items">
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-1)"></span> <strong>1 Critical:</strong> No site, hijacked, or dangerous</div>
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-2)"></span> <strong>2 Urgent:</strong> Expired SSL, dead domain, broken</div>
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-3)"></span> <strong>3 Moderate:</strong> Outdated, neglected content</div>
+        <div class="legend-item"><span class="score-dot" style="background:var(--score-4)"></span> <strong>4 Low:</strong> Generic template, minor issues</div>
+    </div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+    <tr>
+        <th>Business Name</th>
+        <th>Category</th>
+        <th>Score</th>
+        <th>Signal / Notes</th>
+        <th>Platform</th>
+        <th>Domain Status</th>
+    </tr>
+</thead>
+<tbody>
+
+            <tr class="score-1">
+                <td><strong>HarkensAuto</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">1</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Viv's Cafe</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">8</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Health Bap Cafe</strong></td>
+                <td>cafe</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">25</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Salon Backstage</strong></td>
+                <td>hair_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">35</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Razor's Edge Barbershop - Tucson, AZ</strong></td>
+                <td>hair_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">37</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Jewel Salon</strong></td>
+                <td>hair_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">39</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Essie Nails</strong></td>
+                <td>nail_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">41</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Body Gallery Salon</strong></td>
+                <td>nail_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">42</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Precious Nails</strong></td>
+                <td>nail_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">43</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>LV Nail Spa</strong></td>
+                <td>beauty_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">44</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Babydollface Lashes</strong></td>
+                <td>beauty_salon</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">48</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Arizona Pool and Spa Service</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">51</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>PureZen Health &amp; Wellness</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">54</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Dental Office</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">62</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Franzen Michael J DDS</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">69</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Roelker Eva A</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">70</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Dostert Sandra M DO</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">71</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Dr. Deborah Joule, DO</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">72</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Dedhia Param MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">82</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Brewer Stephen C MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">83</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Judith R. Friedman, PT</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">87</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Hayden John D MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">88</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Kathleen B. Nichols, PT</strong></td>
+                <td>physiotherapist</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">90</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>The Delightful Renegade</strong></td>
+                <td>clothing_store</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">93</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Amber Sprott Boutique (by appointment only)</strong></td>
+                <td>clothing_store</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">96</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Ellen's Original Gemstone Necklaces</strong></td>
+                <td>jewelry_store</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">97</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Looking Sharp Cactus</strong></td>
+                <td>florist</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">99</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Florist</strong></td>
+                <td>florist</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">100</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Green Deco Plantscapes</strong></td>
+                <td>florist</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">101</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>VIP PUBLICATIONS</strong></td>
+                <td>book_store</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">103</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Speedo Auto &amp; Residential Lock</strong></td>
+                <td>car_repair</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">108</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-1">
+                <td><strong>Car Wash</strong></td>
+                <td>car_wash</td>
+                <td><span class="score-dot" style="background:#dc2626" title="Score 1: Critical"></span>1</td>
+                <td class="pain-text">111</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-none">No website</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>ZENSHI Handcrafted Sushi</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">2</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Le Buzz</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">3</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>The Ranch Bar and Grill - Tucson</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">4</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>La Herradura Mexican Grill &amp; Seafood</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">6</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>The Gardens at Bear Canyon</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">7</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Bear Canyon Pizza on Tanque Verde</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">10</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Viva Mexican Food</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">11</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Street Taco &amp; Beer Co.</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">13</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Tandem American Eatery</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">14</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Rosati's Pizza</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">15</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Solana Guest Ranch</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">16</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>The Barnyard Crafthouse &amp; Eatery</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">17</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Arizona National Golf Club</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">18</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Thirsty's Neighborhood Grill</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">19</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Jason's Mexican Restaurant</strong></td>
+                <td>restaurant</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">20</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Forty Niner</strong></td>
+                <td>bar</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">21</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Early Bird Scones</strong></td>
+                <td>bakery</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">29</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Sydney's Sweet Shoppe</strong></td>
+                <td>bakery</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">30</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Cafe Francais</strong></td>
+                <td>bakery</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">31</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Grandma Tony's Pizza</strong></td>
+                <td>meal_delivery</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">32</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Cutting Edge Salon &amp; Boutique</strong></td>
+                <td>hair_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">33</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>D's Hair Studio</strong></td>
+                <td>hair_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">36</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Aviary Hair and CO.</strong></td>
+                <td>hair_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">38</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Head Hunters</strong></td>
+                <td>hair_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">40</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Canyon Ranch Aesthetics</strong></td>
+                <td>beauty_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">45</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Sweetheart Haven LLC</strong></td>
+                <td>beauty_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">46</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Mirror Mirror Beauty and Barber</strong></td>
+                <td>beauty_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">47</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Hair 2000</strong></td>
+                <td>beauty_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">49</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Rubs Massage Studio - Wrightstown</strong></td>
+                <td>beauty_salon</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">50</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Glo Skin Studio</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">52</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Canyon Ranch Tucson</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">53</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Rincon Health Direct Primary Care</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">55</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Rapunzel's Spa</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">56</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Thai Day Spa</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">57</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Blissfully Be Holistic Wellness, LLC</strong></td>
+                <td>spa</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">58</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Gene's Barbershop Est.1975</strong></td>
+                <td>barber_shop</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">59</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Marathon Cuts Barbershop</strong></td>
+                <td>barber_shop</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">60</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Pair-A-Dice Barbers</strong></td>
+                <td>barber_shop</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">61</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Sabino Hills Family Dentistry</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">63</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Dr. Michael Allen</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">64</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Dentists on Tanque Verde</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">65</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Dr. Renee Lawton</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">66</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Old Pueblo Dental</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">67</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Jeffrey Rasmussen</strong></td>
+                <td>dentist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">68</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Douglas Ana E</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">73</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Kowalski Nancy E</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">74</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Dr. Elizabeth Kronlage, DO</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">75</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>James Reifschneider, MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">76</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Vuturo Anthony F MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">77</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Marvin Dobkin, DPM</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">78</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Carmona Richard H MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">79</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Lighthearted Medicine, Pllc</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">80</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Downing Diane C MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">81</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Theodosakis Jason MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">84</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Dr. Bruce A. Roberts, MD</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">85</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Autopsyexpert.com</strong></td>
+                <td>doctor</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">86</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Agility Spine and Sports Physical Therapy</strong></td>
+                <td>physiotherapist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">89</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Success Physical Therapy</strong></td>
+                <td>physiotherapist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">91</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>John P. Utz</strong></td>
+                <td>physiotherapist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">92</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Tanque Verde Turquoise Trading Post</strong></td>
+                <td>jewelry_store</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">98</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Exquisite Ensembles and Gifts by Tammie, LLC</strong></td>
+                <td>florist</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">102</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Of Good Cheer</strong></td>
+                <td>gift_shop</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">104</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Borderlands Trading Company</strong></td>
+                <td>gift_shop</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">105</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>BRAKEmax</strong></td>
+                <td>car_repair</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">106</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>A to Z Mobile RV Services and Tucson RV Solar</strong></td>
+                <td>car_repair</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">109</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Jack Furrier Tire &amp; Auto Care</strong></td>
+                <td>car_repair</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">110</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Auto Wash Express - TV</strong></td>
+                <td>car_wash</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">112</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Cactus Carpet Cleaning</strong></td>
+                <td>laundry</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">113</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>EcoGreen Carpet, Tile and Upholstery Care</strong></td>
+                <td>laundry</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">114</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+            <tr class="score-2">
+                <td><strong>Bandalero Ranch-Equine</strong></td>
+                <td>pet_store</td>
+                <td><span class="score-dot" style="background:#ea580c" title="Score 2: Urgent"></span>2</td>
+                <td class="pain-text">115</td>
+                <td>—</td>
+                <td><span class="domain-tag domain-active">Active</span></td>
+            </tr>
+</tbody>
+</table>
+</div>
+
+<a href="index.html" class="back-link">&larr; All Neighborhoods</a>
+
+<footer>Generated from master-prospects.csv &middot; Digital Disconnections Ltd</footer>
+</body>
+</html>
