@@ -1,0 +1,456 @@
+# National Chain Blocklist — dd-pittsburgh-clientele
+# =======================================================
+# Purpose: Filter national/regional chains from prospect CSVs so the
+#   board only sees independent local businesses worth pitching.
+# Format: one name per line, case-insensitive substring match.
+# Script: python3 scripts/filter_chains.py
+#
+# IMPORTANT — FALSE POSITIVE RISK
+# Short or common words are high-risk. Before adding a new entry, ask:
+#   "Could this word appear in a local independent business name?"
+#   e.g. "Ross" catches "Ross Dress for Less" but also "Ross's Diner"
+# Entries marked [HIGH FP RISK] need manual review when filter counts
+# look wrong. Use the FALSE_POSITIVES dict in filter_chains.py to protect
+# known local businesses that match a chain keyword.
+#
+# Additions log:
+#   2026-04-14 (DIG-785): Initial 107 patterns — fast food, hair chains,
+#     auto, fitness, retail, banking, shipping (Derek)
+#   2026-04-14 (Monroeville sweep DIG-787): +168 patterns — Hotels/lodging
+#     expanded; more fast food variants; apparel chains; groceries; PA-regional
+#     convenience chains (Sheetz, GetGo); more retail/fitness/salon variants.
+#     See "Monroeville sweep additions" comments below for which entries are
+#     PA-regional vs purely national.
+# =======================================================
+
+
+# -------------------------------------------------------
+# DEPARTMENT / BIG-BOX RETAIL
+# Added: DIG-785 initial pass + Monroeville sweep expansion
+# -------------------------------------------------------
+Target        # [HIGH FP RISK] also matches "Target Physical Therapy" etc — check removal log
+Walmart
+Kohl's
+Kohls
+Marshalls
+TJ Maxx
+TJMaxx
+HomeGoods
+Home Goods
+Macy's
+Macys
+JCPenney
+JC Penney
+Sears
+Burlington
+Burlington Coat Factory
+Dick's Sporting Goods
+Dicks Sporting Goods
+Academy Sports
+REI
+Bass Pro
+Cabela's
+Cabelas
+Big Lots
+Ollie's
+Ollies         # Ollie's Bargain Outlet — regional discount chain
+Value City
+Tuesday Morning
+
+
+# -------------------------------------------------------
+# APPAREL / FASHION CHAINS
+# Added: Monroeville sweep — several flagged in Places API results
+# -------------------------------------------------------
+Old Navy
+Gap            # [HIGH FP RISK] 3-letter substring — watch for "Gap's Auto" type names
+Banana Republic
+H&M
+Zara
+Forever 21
+Forever21
+American Eagle
+Abercrombie
+Hollister
+Victoria's Secret
+Victorias Secret
+Bath & Body Works
+Bath and Body Works
+SEPHORA
+Ulta Beauty
+rue21
+Rue21
+
+
+# -------------------------------------------------------
+# SEASONAL / SPECIALTY RETAIL
+# Added: DIG-785 initial pass + Monroeville sweep
+# -------------------------------------------------------
+Spirit Halloween
+Halloween City
+Christmas Tree Shops
+Five Below
+
+
+# -------------------------------------------------------
+# HOME IMPROVEMENT / HARDWARE
+# Added: Monroeville sweep — Home Depot + Menards appeared in Places results
+# -------------------------------------------------------
+Home Depot
+Lowe's
+Lowes
+Menards
+Ace Hardware    # Ace is franchised; some locations are truly independent — use judgment
+
+
+# -------------------------------------------------------
+# FAST FOOD / QSR
+# Added: DIG-785 initial + Monroeville sweep expanded with more variants
+# Monroeville additions: Popeyes, Arby's, Dairy Queen, Hardee's, Sonic,
+#   Culver's, Tim Hortons, Panda Express, Qdoba, Moe's, Blaze Pizza,
+#   MOD Pizza, Noodles & Company, Potbelly, Which Wich, Corner Bakery
+# -------------------------------------------------------
+McDonald's
+McDonalds
+Burger King
+Wendy's
+Wendys
+Subway
+Taco Bell
+KFC
+Chick-fil-A
+Chick fil A
+Chick-fil-a
+Popeyes
+Popeye's
+Domino's
+Dominos
+Pizza Hut
+Little Caesars
+Little Caesar's
+Papa John's
+Papa Johns
+Papa Murphy's
+Papa Murphys
+Starbucks
+Starbucks Coffee Company
+Dunkin'
+Dunkin
+Tim Hortons
+Panera Bread
+Panera
+Chipotle
+Applebee's
+Applebees
+Chili's
+Chilis
+TGI Fridays
+TGI Friday's
+Olive Garden
+Red Lobster
+Buffalo Wild Wings
+Hooters
+Bob Evans
+Denny's
+Dennys
+IHOP
+Cracker Barrel
+Five Guys
+Shake Shack
+Wingstop
+Raising Cane's
+Raising Canes
+Culver's
+Culvers
+Sonic             # [MODERATE FP RISK] "Sonic" can appear in non-QSR local names
+Arby's
+Arbys
+Dairy Queen
+Hardee's
+Hardees
+Long John Silver's
+Long John Silvers
+Panda Express
+Qdoba
+Moe's Southwest Grill   # was bare "Moe's" — too common a bar/grill name; narrowed to full chain name
+Moe's SW Grill
+Jimmy John's
+Jimmy Johns
+Jersey Mike's
+Jersey Mikes
+Firehouse Subs
+Jason's Deli
+Jasons Deli
+Corner Bakery
+Noodles & Company
+Noodles and Company
+Potbelly
+Which Wich
+Blaze Pizza
+MOD Pizza
+Marco's Pizza
+Marcos Pizza
+Jet's Pizza
+Jets Pizza
+Hungry Howie's
+Hungry Howies
+Round Table Pizza
+Yellow Cab Pizza   # Pittsburgh-area pizza chain — regional, not national, but multi-location
+Vocelli Pizza      # Pittsburgh-area franchise chain — regional, multi-location
+Primanti Brothers  # Pittsburgh-born chain, now 45+ locations — national enough to filter
+
+
+# -------------------------------------------------------
+# PHARMACIES / DRUG STORES
+# Added: DIG-785 initial
+# -------------------------------------------------------
+CVS
+CVS Pharmacy
+Walgreens
+Rite Aid
+Duane Reade    # NYC-only (unlikely in Pittsburgh but harmless)
+Kinney Drugs
+
+
+# -------------------------------------------------------
+# GROCERY / SUPERMARKET
+# Added: Monroeville sweep — several grocery chains appeared in Places results
+# Note: Giant Eagle is PA-regional but has 200+ locations and corporate web team
+# -------------------------------------------------------
+Giant Eagle    # PA-regional chain (Pittsburgh-based) — has corporate web team
+GetGo          # Giant Eagle's fuel/convenience brand — PA-regional
+Kroger
+Aldi
+Lidl
+Publix         # Southeast US chain, unlikely in Pittsburgh but harmless
+Safeway        # Unlikely in Pittsburgh area but harmless
+Whole Foods
+Trader Joe's
+Trader Joes
+Sam's Club
+Costco
+BJ's Wholesale
+
+
+# -------------------------------------------------------
+# CONVENIENCE / GAS
+# Added: Monroeville sweep — Sheetz/GetGo appeared frequently in PA suburban results
+# -------------------------------------------------------
+Sheetz         # PA-regional chain — large enough to have corporate web presence
+Speedway
+Circle K
+7-Eleven
+
+
+# -------------------------------------------------------
+# PET / HOBBY / OFFICE SUPPLY
+# Added: Monroeville sweep
+# -------------------------------------------------------
+Petco
+PetSmart
+Tractor Supply
+GameStop
+Best Buy
+Office Depot
+OfficeMax
+Staples
+Michaels
+Hobby Lobby
+JoAnn
+Jo-Ann
+
+
+# -------------------------------------------------------
+# BANKS / FINANCIAL SERVICES
+# Added: DIG-785 initial (major banks) + Monroeville sweep (regional banks)
+# Monroeville additions: Fifth Third, Huntington, M&T, First National Bank, TD Bank
+# -------------------------------------------------------
+PNC Bank
+PNC Financial
+Chase Bank
+Bank of America
+Wells Fargo
+KeyBank
+Key Bank
+Citizens Bank
+TD Bank
+First National Bank   # [MODERATE FP RISK] common phrase — watch for "First National Bakery" etc
+Huntington Bank
+Fifth Third Bank
+M&T Bank
+H&R Block
+Jackson Hewitt
+Liberty Tax
+
+
+# -------------------------------------------------------
+# SALONS / HAIR CHAINS
+# Added: DIG-785 initial + Monroeville sweep (Cost Cutters, Floyd's, Roosters,
+#   Best Cuts, Fiesta Salon, MasterCuts — all appeared in Gibsonia/Hampton sweep)
+# -------------------------------------------------------
+Great Clips
+Sport Clips
+Supercuts
+Cost Cutters
+Regis Salon
+Regis Salons
+Fantastic Sams
+Fantastic Sam's
+Hair Cuttery
+Best Cuts
+Smartstyle
+SmartStyle
+Roosters          # men's grooming chain — "Roosters" bar/restaurant would be a false positive
+Floyd's Barbershop
+Floyds Barbershop
+MasterCuts
+Fiesta Salon
+JCPenney Salon
+
+
+# -------------------------------------------------------
+# AUTO SERVICE
+# Added: DIG-785 initial + Monroeville sweep (Meineke, Christian Brothers,
+#   Take 5, Grease Monkey, Monro expanded)
+# -------------------------------------------------------
+Jiffy Lube
+Valvoline Instant Oil Change
+Valvoline
+Firestone
+Midas
+Meineke
+Pep Boys
+AutoZone
+AutoZone Auto Parts
+Advance Auto Parts
+Advance Auto
+O'Reilly Auto Parts
+O'Reilly Auto
+O'Reilly
+OReilly Auto
+NAPA Auto
+Goodyear
+Mavis Discount Tire
+Mavis Tires
+NTB-National Tire & Battery
+NTB
+Monro Muffler
+Monro Auto
+Christian Brothers Automotive
+Take 5 Oil
+Grease Monkey
+
+
+# -------------------------------------------------------
+# FITNESS
+# Added: DIG-785 initial + Monroeville sweep (24 Hour Fitness, Curves,
+#   Snap Fitness, Lifetime)
+# -------------------------------------------------------
+Planet Fitness
+Anytime Fitness
+LA Fitness
+24 Hour Fitness
+Lifetime Fitness
+Life Time
+Gold's Gym
+Golds Gym
+Curves            # [MODERATE FP RISK] "Curves" is a common word in salon/boutique names
+Snap Fitness
+Equinox
+Orange Theory
+F45 Training
+YMCA              # Non-profit but national org; local branches have corporate web support
+
+
+# -------------------------------------------------------
+# HOTELS / LODGING
+# Added: Monroeville sweep — hotel chains appeared heavily in suburban Places results
+# -------------------------------------------------------
+Marriott
+Hilton
+IHG
+Hyatt
+Holiday Inn
+Best Western
+Comfort Inn
+Comfort Suites
+Hampton Inn
+Courtyard
+Fairfield Inn
+Residence Inn
+SpringHill Suites
+TownePlace Suites
+Homewood Suites
+Embassy Suites
+Crowne Plaza
+InterContinental
+Radisson
+Wyndham
+Days Inn
+Super 8
+Motel 6
+Extended Stay
+La Quinta
+Candlewood Suites
+Staybridge Suites
+
+
+# -------------------------------------------------------
+# SHIPPING / BUSINESS SERVICES
+# Added: DIG-785 initial
+# -------------------------------------------------------
+The UPS Store
+UPS Store
+FedEx Office
+
+
+# -------------------------------------------------------
+# NATIONAL BARS / BREWERIES
+# Added: DIG-785 initial
+# -------------------------------------------------------
+BrewDog         # UK-origin international chain
+
+
+# -------------------------------------------------------
+# ACTIVEWEAR / SPORTS SPECIALTY
+# Added: DIG-785 initial
+# -------------------------------------------------------
+Title 9
+Title Nine
+
+
+# -------------------------------------------------------
+# NONPROFITS WITH CORPORATE WEB TEAMS
+# Added: Monroeville sweep
+# These aren't chains in the commercial sense but have national org web support
+# -------------------------------------------------------
+Goodwill
+Salvation Army
+
+
+# -------------------------------------------------------
+# MISCELLANEOUS NATIONAL RETAIL
+# Added: Monroeville sweep
+# -------------------------------------------------------
+Dollar General
+Dollar Tree
+Family Dollar
+
+
+# -------------------------------------------------------
+# AZ-REGIONAL CHAINS
+# Added: DIG-788 Tucson repo setup
+# -------------------------------------------------------
+Eegee's        # Tucson-based chain, 25+ locations
+Eegees
+Native Grill & Wings   # AZ franchise chain
+Native Grill
+Oregano's Pizza Bistro  # AZ regional chain
+Oreganos
+Filiberto's    # AZ/Southwest taco chain
+Filibertos
+Los Betos      # AZ/Southwest taco chain
+Carolina's Mexican Food  # AZ chain
+Carolinas Mexican
+Whataburger    # Southwest/South QSR chain
+Circle K       # Already listed but AZ-headquartered — ensure present
