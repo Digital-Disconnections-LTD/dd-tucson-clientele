@@ -8,6 +8,7 @@ from collections import Counter, defaultdict
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH = os.path.join(REPO, "data", "master-prospects.csv")
+SHORTLIST_CSV_PATH = os.path.join(REPO, "data", "shortlist.csv")
 HTML_DIR = os.path.join(REPO, "html")
 
 DANGEROUS_KEYWORDS = [
@@ -366,6 +367,13 @@ def render_index(neighborhoods, all_rows):
     </div>
 </div>
 
+<div style="margin-bottom:2rem">
+    <a href="shortlist.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);border-radius:8px;padding:0.75rem 1.25rem;color:var(--accent);font-weight:600;text-decoration:none;">
+        &#9733; View Outreach Shortlist &rarr;
+    </a>
+    <span style="margin-left:1rem;color:var(--text-muted);font-size:0.9rem">Top 50 prospects scored &amp; ranked for outreach</span>
+</div>
+
 <div class="legend">
     <h3>Scoring Rubric</h3>
     <div class="legend-items">
@@ -499,6 +507,164 @@ def render_neighborhood(slug, rows):
 </html>"""
 
 
+TIER_COLORS = {
+    "1": "#dc2626",
+    "2": "#ea580c",
+    "3": "#ca8a04",
+}
+
+TIER_LABELS = {
+    "1": "No Website",
+    "2": "Weak Platform",
+    "3": "WP / Squarespace",
+}
+
+
+def render_shortlist(shortlist_rows):
+    total = len(shortlist_rows)
+    tier_counts = Counter(r["tier"] for r in shortlist_rows)
+
+    zone_display = {
+        "catalina-foothills": "Catalina Foothills",
+        "oro-valley": "Oro Valley",
+        "tanque-verde-sabino": "Tanque Verde / Sabino",
+        "casas-adobes": "Casas Adobes",
+        "sam-hughes-university": "Sam Hughes / University",
+    }
+
+    table_rows = []
+    for rank, r in enumerate(shortlist_rows, 1):
+        tier = r.get("tier", "")
+        tier_color = TIER_COLORS.get(tier, "#666")
+        tier_label = TIER_LABELS.get(tier, f"Tier {tier}")
+        zone = zone_display.get(r.get("zone", ""), r.get("zone", ""))
+        score = r.get("score", "")
+        rating = r.get("google_rating", "").strip()
+        reviews = r.get("review_count", "").strip()
+        domain = r.get("domain_suggestion", "").strip()
+        maps_url = r.get("google_maps_url", "").strip()
+        name = r.get("business_name", "")
+        category = r.get("category", "").replace("_", " ")
+        platform = r.get("platform", "none").strip()
+        rationale = r.get("rationale", "")
+
+        name_cell = (
+            f'<a href="{html_escape(maps_url)}" target="_blank" rel="noopener">'
+            f'<strong>{html_escape(name)}</strong></a>'
+            if maps_url else f'<strong>{html_escape(name)}</strong>'
+        )
+
+        domain_cell = (
+            f'<span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">'
+            f'{html_escape(domain)}</span>'
+            if domain else '<span style="color:var(--text-muted)">—</span>'
+        )
+
+        tier_badge = (
+            f'<span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;'
+            f'font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);'
+            f'color:{tier_color};border:1px solid {tier_color}40">'
+            f'T{tier} {tier_label}</span>'
+        )
+
+        rating_str = f"{rating}★" if rating else "—"
+        review_str = reviews if reviews else "—"
+
+        table_rows.append(f"""
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">{rank}</td>
+                <td>{name_cell}<br><span style="font-size:0.8rem;color:var(--text-muted)">{html_escape(category)}</span></td>
+                <td>{tier_badge}</td>
+                <td style="text-align:center;font-weight:600;color:{tier_color}">{html_escape(score)}</td>
+                <td>{html_escape(zone)}</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">{html_escape(platform)}</td>
+                <td>{domain_cell}</td>
+                <td style="text-align:center">{html_escape(rating_str)}</td>
+                <td style="text-align:center">{html_escape(review_str)}</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">{html_escape(rationale)}</td>
+            </tr>""")
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach Shortlist — Tucson Prospects</title>
+<style>{CSS}</style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">&larr; All Neighborhoods</a>
+
+<h1>&#9733; Outreach Shortlist</h1>
+<p class="subtitle">Top {total} Tucson prospects scored &amp; ranked for outreach — Wave 1</p>
+
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="number">{total}</div>
+        <div class="label">Total Selected</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:{TIER_COLORS['1']}">{tier_counts.get('1', 0)}</div>
+        <div class="label">Tier 1 — No Website</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:{TIER_COLORS['2']}">{tier_counts.get('2', 0)}</div>
+        <div class="label">Tier 2 — Weak Platform</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:{TIER_COLORS['3']}">{tier_counts.get('3', 0)}</div>
+        <div class="label">Tier 3 — WP / Squarespace</div>
+    </div>
+</div>
+
+<div class="legend">
+    <h3>Tier Guide</h3>
+    <div class="legend-items">
+        <div class="legend-item">
+            <span class="score-dot" style="background:{TIER_COLORS['1']}"></span>
+            <strong>Tier 1 — No Website:</strong> Business has zero web presence. Lead with domain suggestion. Highest conversion potential.
+        </div>
+        <div class="legend-item">
+            <span class="score-dot" style="background:{TIER_COLORS['2']}"></span>
+            <strong>Tier 2 — Weak Platform:</strong> On Wix, Weebly, or other template builders. Pitch professional redesign + cost comparison.
+        </div>
+        <div class="legend-item">
+            <span class="score-dot" style="background:{TIER_COLORS['3']}"></span>
+            <strong>Tier 3 — WP / Squarespace:</strong> Has a capable platform but outdated execution. Pitch visual refresh or full redesign.
+        </div>
+    </div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+    <tr>
+        <th>#</th>
+        <th>Business</th>
+        <th>Tier</th>
+        <th>Score</th>
+        <th>Zone</th>
+        <th>Platform</th>
+        <th>Domain Suggestion</th>
+        <th>Rating</th>
+        <th>Reviews</th>
+        <th>Rationale</th>
+    </tr>
+</thead>
+<tbody>
+{"".join(table_rows)}
+</tbody>
+</table>
+</div>
+
+<a href="index.html" class="back-link">&larr; All Neighborhoods</a>
+
+<footer>Generated from data/shortlist.csv &middot; Digital Disconnections Ltd</footer>
+</body>
+</html>"""
+
+
 def main():
     os.makedirs(HTML_DIR, exist_ok=True)
 
@@ -534,7 +700,16 @@ def main():
             f.write(render_neighborhood(slug, rows))
         print(f"  {fname} ({len(rows)} prospects)")
 
-    print(f"\nDone — {len(index_by_slug) + 1} files in html/")
+    # Generate shortlist view if shortlist CSV exists
+    if os.path.exists(SHORTLIST_CSV_PATH):
+        with open(SHORTLIST_CSV_PATH, newline="") as f:
+            reader = csv.DictReader(f)
+            shortlist_rows = list(reader)
+        with open(os.path.join(HTML_DIR, "shortlist.html"), "w") as f:
+            f.write(render_shortlist(shortlist_rows))
+        print(f"  shortlist.html ({len(shortlist_rows)} prospects)")
+
+    print(f"\nDone — {len(index_by_slug) + 2} files in html/")
 
 
 if __name__ == "__main__":

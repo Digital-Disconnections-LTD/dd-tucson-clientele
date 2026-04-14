@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach Shortlist — Tucson Prospects</title>
+<style>
+:root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #60a5fa;
+    --score-1: #dc2626;
+    --score-2: #ea580c;
+    --score-3: #ca8a04;
+    --score-4: #65a30d;
+    --danger-bg: #451a1a;
+    --danger-border: #991b1b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+
+.subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+.back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.summary-card .number { font-size: 2rem; font-weight: 700; line-height: 1.2; }
+.summary-card .label {
+    font-size: 0.8rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.hood-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.hood-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    transition: background 0.15s;
+}
+.hood-card:hover { background: var(--surface-hover); }
+.hood-card h2 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+.hood-card h2 a { color: var(--text); }
+.hood-card h2 a:hover { color: var(--accent); }
+
+.hood-stats { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-score-1 { background: rgba(220,38,38,0.2); color: #fca5a5; }
+.badge-score-2 { background: rgba(234,88,12,0.2); color: #fdba74; }
+.badge-score-3 { background: rgba(202,138,4,0.2); color: #fde047; }
+.badge-score-4 { background: rgba(101,163,13,0.2); color: #bef264; }
+
+.table-wrap {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+th {
+    background: var(--surface);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+}
+
+td {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+}
+
+tr:hover td { background: var(--surface-hover); }
+
+tr.score-1 td { border-left: 3px solid var(--score-1); }
+tr.score-2 td { border-left: 3px solid var(--score-2); }
+tr.score-1 td:first-child, tr.score-2 td:first-child { padding-left: calc(1rem - 3px); }
+
+tr.dangerous td { background: var(--danger-bg); }
+tr.dangerous:hover td { background: #5c2121; }
+
+.score-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+}
+
+.domain-tag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.domain-none { background: rgba(148,163,184,0.2); color: #94a3b8; }
+.domain-active { background: rgba(101,163,13,0.2); color: #bef264; }
+.domain-danger { background: rgba(220,38,38,0.3); color: #fca5a5; border: 1px solid var(--danger-border); }
+.domain-warn { background: rgba(234,88,12,0.2); color: #fdba74; }
+
+.legend {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.legend h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.legend-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.5rem;
+}
+
+.legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+
+.pain-text { font-size: 0.8rem; color: var(--text-muted); max-width: 350px; }
+
+footer {
+    margin-top: 3rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--text-muted); text-align: center;
+}
+
+@media (max-width: 640px) {
+    body { padding: 1rem; }
+    h1 { font-size: 1.35rem; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .hood-list { grid-template-columns: 1fr; }
+    td, th { padding: 0.5rem; font-size: 0.8rem; }
+    .pain-text { max-width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">&larr; All Neighborhoods</a>
+
+<h1>&#9733; Outreach Shortlist</h1>
+<p class="subtitle">Top 50 Tucson prospects scored &amp; ranked for outreach — Wave 1</p>
+
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="number">50</div>
+        <div class="label">Total Selected</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:#dc2626">20</div>
+        <div class="label">Tier 1 — No Website</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:#ea580c">15</div>
+        <div class="label">Tier 2 — Weak Platform</div>
+    </div>
+    <div class="summary-card">
+        <div class="number" style="color:#ca8a04">15</div>
+        <div class="label">Tier 3 — WP / Squarespace</div>
+    </div>
+</div>
+
+<div class="legend">
+    <h3>Tier Guide</h3>
+    <div class="legend-items">
+        <div class="legend-item">
+            <span class="score-dot" style="background:#dc2626"></span>
+            <strong>Tier 1 — No Website:</strong> Business has zero web presence. Lead with domain suggestion. Highest conversion potential.
+        </div>
+        <div class="legend-item">
+            <span class="score-dot" style="background:#ea580c"></span>
+            <strong>Tier 2 — Weak Platform:</strong> On Wix, Weebly, or other template builders. Pitch professional redesign + cost comparison.
+        </div>
+        <div class="legend-item">
+            <span class="score-dot" style="background:#ca8a04"></span>
+            <strong>Tier 3 — WP / Squarespace:</strong> Has a capable platform but outdated execution. Pitch visual refresh or full redesign.
+        </div>
+    </div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+    <tr>
+        <th>#</th>
+        <th>Business</th>
+        <th>Tier</th>
+        <th>Score</th>
+        <th>Zone</th>
+        <th>Platform</th>
+        <th>Domain Suggestion</th>
+        <th>Rating</th>
+        <th>Reviews</th>
+        <th>Rationale</th>
+    </tr>
+</thead>
+<tbody>
+
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">1</td>
+                <td><a href="https://maps.google.com/?q=Herbert%20M.%20Grossman%2C%20M.D.%204729%20E%20Sunrise%20Dr%20POB%20233%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Herbert M. Grossman, M.D.</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">132</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">herbertmgrossmanmd.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">7</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; doctor in Catalina Foothills, 5★ 7 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">2</td>
+                <td><a href="https://maps.google.com/?q=Bone%204640%20E%20Sunrise%20Dr%20%23100%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Bone</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">132</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">bonetucson.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">19</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; doctor in Catalina Foothills, 5★ 19 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">3</td>
+                <td><a href="https://maps.google.com/?q=Tucson%20Foot%20and%20Ankle%20Institute%207406%20N%20La%20Cholla%20Blvd%2C%20Tucson%2C%20AZ%2085741%2C%20USA" target="_blank" rel="noopener"><strong>Tucson Foot and Ankle Institute</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">130</td>
+                <td>Casas Adobes</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">tucsonfootandankleinstitute.com</span></td>
+                <td style="text-align:center">4.8★</td>
+                <td style="text-align:center">248</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; doctor in Casas Adobes, 4.8★ 248 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">4</td>
+                <td><a href="https://maps.google.com/?q=Follow%20Through%20Fitness%205501%20N%20Swan%20Rd%20%23150%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Follow Through Fitness</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">130</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">followthroughfitnesstucson.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">5</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; physiotherapist in Catalina Foothills, 5★ 5 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">5</td>
+                <td><a href="https://maps.google.com/?q=Wildflower%20Med%20Spa%20LLC%204640%20E%20Sunrise%20Dr%20%23100%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Wildflower Med Spa LLC</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">spa</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">127</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">wildflowermedspatucson.com</span></td>
+                <td style="text-align:center">4.6★</td>
+                <td style="text-align:center">19</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; spa in Catalina Foothills, 4.6★ 19 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">6</td>
+                <td><a href="https://maps.google.com/?q=Jouvance%20Med%20Spa%204640%20E%20Sunrise%20Dr%20%23100%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Jouvance Med Spa</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">spa</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">127</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">jouvancemedspa.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">18</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; spa in Catalina Foothills, 5★ 18 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">7</td>
+                <td><a href="https://maps.google.com/?q=Dr.%20Joseph%20Larsen%209000%20N%20Oracle%20Rd%2C%20Oro%20Valley%2C%20AZ%2085704%2C%20USA" target="_blank" rel="noopener"><strong>Dr. Joseph Larsen</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">dentist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">127</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">drjosephlarsen.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">1</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; dentist in Oro Valley, 5★ 1 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">8</td>
+                <td><a href="https://maps.google.com/?q=Joshua%20Crosby%209000%20N%20Oracle%20Rd%20Ste%20200%2C%20Tucson%2C%20AZ%2085704%2C%20USA" target="_blank" rel="noopener"><strong>Joshua Crosby</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">dentist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">127</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">joshuacrosbytucson.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">2</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; dentist in Oro Valley, 5★ 2 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">9</td>
+                <td><a href="https://maps.google.com/?q=Dr.%20Randall%20W.%20Fehr%2C%20MD%2010371%20N%20Oracle%20Rd%20Suite%20204%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Dr. Randall W. Fehr, MD</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">127</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">drrandallwfehrmd.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">4</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; doctor in Oro Valley, 5★ 4 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">10</td>
+                <td><a href="https://maps.google.com/?q=Will%20Polec%2C%20NMD%206262%20N%20Swan%20Rd%20Ste%20120%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Will Polec, NMD</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">126</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">willpolecnmd.com</span></td>
+                <td style="text-align:center">3.9★</td>
+                <td style="text-align:center">7</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; doctor in Catalina Foothills, 3.9★ 7 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">11</td>
+                <td><a href="https://maps.google.com/?q=LV%20Nail%20Spa%208856%20E%20Tanque%20Verde%20Rd%2C%20Tucson%2C%20AZ%2085749%2C%20USA" target="_blank" rel="noopener"><strong>LV Nail Spa</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">beauty salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">126</td>
+                <td>Tanque Verde / Sabino</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">lvnailspatucson.com</span></td>
+                <td style="text-align:center">4.3★</td>
+                <td style="text-align:center">234</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; beauty salon in Tanque Verde, 4.3★ 234 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">12</td>
+                <td><a href="https://maps.google.com/?q=Franklyn%20Pfeil%2010550%20N%20La%20Ca%C3%B1ada%20Dr%20Ste%20160%2C%20Tucson%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Franklyn Pfeil</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">125</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">franklynpfeil.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">1</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; physiotherapist in Oro Valley, 5★ 1 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">13</td>
+                <td><a href="https://maps.google.com/?q=Pelvic%20Health%202%20You%201182%20W%20Masters%20Cir%2C%20Tucson%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Pelvic Health 2 You</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">125</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">pelvichealth2youtucson.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">1</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; physiotherapist in Oro Valley, 5★ 1 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">14</td>
+                <td><a href="https://maps.google.com/?q=Top%20Knotch%20Salon%205673%20N%20Swan%20Rd%20%23179%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Top Knotch Salon</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">hair salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">124</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">topknotchsalontucson.com</span></td>
+                <td style="text-align:center">4.6★</td>
+                <td style="text-align:center">16</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; hair salon in Catalina Foothills, 4.6★ 16 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">15</td>
+                <td><a href="https://maps.google.com/?q=Not%20Forgotten%20Mobile%20Hair%20Studio%204500%20E%20Sunrise%20Dr%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Not Forgotten Mobile Hair Studio</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">hair salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">124</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">notforgottenmobilehairstudio.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">1</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; hair salon in Catalina Foothills, 5★ 1 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">16</td>
+                <td><a href="https://maps.google.com/?q=The%20Art%20of%20Nails%2011931%20N%201st%20Ave%20%23103%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>The Art of Nails</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">nail salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">122</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">artofnailstucson.com</span></td>
+                <td style="text-align:center">4.4★</td>
+                <td style="text-align:center">132</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; nail salon in Oro Valley, 4.4★ 132 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">17</td>
+                <td><a href="https://maps.google.com/?q=Chic%20Nail%20Boutique%201880%20E%20Tangerine%20Rd%20%23%20120%2C%20Oro%20Valley%2C%20AZ%2085755%2C%20USA" target="_blank" rel="noopener"><strong>Chic Nail Boutique</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">nail salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">122</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">chicnailboutiquetucson.com</span></td>
+                <td style="text-align:center">4.3★</td>
+                <td style="text-align:center">102</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; nail salon in Oro Valley, 4.3★ 102 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">18</td>
+                <td><a href="https://maps.google.com/?q=The%20Beauty%20Spot%2010420%20N%20La%20Ca%C3%B1ada%20Dr%20%23120%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>The Beauty Spot</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">spa</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">122</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">beautyspottucson.com</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">9</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; spa in Oro Valley, 5★ 9 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">19</td>
+                <td><a href="https://maps.google.com/?q=Adient-Gyllenhaal%20Physical%20Therapy%2012162%20N%20Rancho%20Vistoso%20Blvd%2C%20Oro%20Valley%2C%20AZ%2085755%2C%20USA" target="_blank" rel="noopener"><strong>Adient-Gyllenhaal Physical Therapy</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">122</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">adientgyllenhaalphysicaltherapy.com</span></td>
+                <td style="text-align:center">4★</td>
+                <td style="text-align:center">1</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; physiotherapist in Oro Valley, 4★ 1 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">20</td>
+                <td><a href="https://maps.google.com/?q=Razor%27s%20Edge%20Barbershop%20-%20Tucson%2C%20AZ%202462%20N%20Pantano%20Rd%20%232%2C%20Tucson%2C%20AZ%2085715%2C%20USA" target="_blank" rel="noopener"><strong>Razor's Edge Barbershop - Tucson, AZ</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">hair salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#dc2626;border:1px solid #dc262640">T1 No Website</span></td>
+                <td style="text-align:center;font-weight:600;color:#dc2626">122</td>
+                <td>Tanque Verde / Sabino</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">none</td>
+                <td><span style="font-family:monospace;font-size:0.8rem;color:var(--accent)">razorsedgebarbershoptucsonaz.com</span></td>
+                <td style="text-align:center">4.7★</td>
+                <td style="text-align:center">153</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 1 — no website; hair salon in Tanque Verde, 4.7★ 153 reviews</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">21</td>
+                <td><a href="https://maps.google.com/?q=Executive%20Healthcare%20And%20Aviation%20Medicine%206450%20N%20Swan%20Rd%20%23120%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Executive Healthcare And Aviation Medicine</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">102</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">12</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; doctor in Catalina Foothills, 5★ 12 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">22</td>
+                <td><a href="https://maps.google.com/?q=Vivace%20Restaurant%206440%20N%20Campbell%20Ave%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Vivace Restaurant</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">restaurant</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">100</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.7★</td>
+                <td style="text-align:center">2345</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; restaurant in Catalina Foothills, 4.7★ 2345 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">23</td>
+                <td><a href="https://maps.google.com/?q=Ventana%207980%20N%20Oracle%20Rd%20Suite%20110%2C%20Oro%20Valley%2C%20AZ%2085704%2C%20USA" target="_blank" rel="noopener"><strong>Ventana</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">98</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">weebly</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">81</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — weebly site; physiotherapist in Oro Valley, 5★ 81 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">24</td>
+                <td><a href="https://maps.google.com/?q=Bisbee%20Breakfast%20Club%204811%20E%20Sunrise%20Dr%20Suite%20165%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Bisbee Breakfast Club</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">restaurant</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">97</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.4★</td>
+                <td style="text-align:center">1090</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; restaurant in Catalina Foothills, 4.4★ 1090 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">25</td>
+                <td><a href="https://maps.google.com/?q=BB%20Beauty%20Lounge%20%28Foothills%29%206450%20N%20Swan%20Rd%20STE%20100%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>BB Beauty Lounge (Foothills)</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">spa</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">97</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">13</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; spa in Catalina Foothills, 5★ 13 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">26</td>
+                <td><a href="https://maps.google.com/?q=lewis%20%2B%20ivey%20salon%201880%20E%20Tangerine%20Rd%20%23160%2C%20Oro%20Valley%2C%20AZ%2085755%2C%20USA" target="_blank" rel="noopener"><strong>lewis + ivey salon</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">hair salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">97</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">185</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; hair salon in Oro Valley, 4.9★ 185 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">27</td>
+                <td><a href="https://maps.google.com/?q=Cutting%20Edge%20Salon%20%26%20Boutique%209155%20E%20Tanque%20Verde%20Rd%2C%20Tucson%2C%20AZ%2085749%2C%20USA" target="_blank" rel="noopener"><strong>Cutting Edge Salon &amp; Boutique</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">hair salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">97</td>
+                <td>Tanque Verde / Sabino</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">338</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; hair salon in Tanque Verde, 4.9★ 338 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">28</td>
+                <td><a href="https://maps.google.com/?q=Tavolino%20Ristorante%20Italiano%202890%20E%20Skyline%20Dr%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Tavolino Ristorante Italiano</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">bar</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">96</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.4★</td>
+                <td style="text-align:center">797</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; bar in Catalina Foothills, 4.4★ 797 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">29</td>
+                <td><a href="https://maps.google.com/?q=Foothills%20Dermatology%207418%20N%20La%20Cholla%20Blvd%2C%20Tucson%2C%20AZ%2085741%2C%20USA" target="_blank" rel="noopener"><strong>Foothills Dermatology</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">beauty salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">94</td>
+                <td>Casas Adobes</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">421</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; beauty salon in Casas Adobes, 4.9★ 421 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">30</td>
+                <td><a href="https://maps.google.com/?q=Rooted%20Integrative%20Wellness%201600%20N%20Tucson%20Blvd%20Suite%20100%20%26%20120%2C%20Tucson%2C%20AZ%2085716%2C%20USA" target="_blank" rel="noopener"><strong>Rooted Integrative Wellness</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">93</td>
+                <td>Sam Hughes / University</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">weebly</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">278</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — weebly site; physiotherapist in Sam Hughes/University, 5★ 278 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">31</td>
+                <td><a href="https://maps.google.com/?q=Blue%20Lemon%20Health%20%26%20Wellness%2010132%20N%20Oracle%20Rd%20Ste%20160%2C%20Tucson%2C%20AZ%2085704%2C%20USA" target="_blank" rel="noopener"><strong>Blue Lemon Health &amp; Wellness</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">spa</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">92</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">weebly</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">2</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — weebly site; spa in Oro Valley, 5★ 2 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">32</td>
+                <td><a href="https://maps.google.com/?q=Harvest%20Restaurant%2010355%20N%20La%20Ca%C3%B1ada%20Dr%20%23141%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Harvest Restaurant</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">bar</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">91</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.3★</td>
+                <td style="text-align:center">1093</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; bar in Oro Valley, 4.3★ 1093 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">33</td>
+                <td><a href="https://maps.google.com/?q=Fork%20%26%20Fire%20Smokehouse%20%2B%20Taproom%2011835%20N%20Oracle%20Rd%20%23101%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Fork &amp; Fire Smokehouse + Taproom</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">bar</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">91</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.4★</td>
+                <td style="text-align:center">839</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; bar in Oro Valley, 4.4★ 839 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">34</td>
+                <td><a href="https://maps.google.com/?q=The%20Nest%206370%20N%20Campbell%20Ave%20%23130%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>The Nest</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">clothing store</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">90</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">21</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; clothing store in Catalina Foothills, 5★ 21 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">35</td>
+                <td><a href="https://maps.google.com/?q=Rapunzel%27s%20Spa%207809%20E%20Wrightstown%20Rd%2C%20Tucson%2C%20AZ%2085715%2C%20USA" target="_blank" rel="noopener"><strong>Rapunzel's Spa</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">spa</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ea580c;border:1px solid #ea580c40">T2 Weak Platform</span></td>
+                <td style="text-align:center;font-weight:600;color:#ea580c">90</td>
+                <td>Tanque Verde / Sabino</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wix</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.8★</td>
+                <td style="text-align:center">73</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 2 — wix site; spa in Tanque Verde, 4.8★ 73 reviews — upgrade from template</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">36</td>
+                <td><a href="https://maps.google.com/?q=Oro%20Valley%20Dental%20Group%20750%20E%20Pusch%20View%20Ln%20%23100%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Oro Valley Dental Group</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">dentist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">100</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">1246</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; dentist in Oro Valley, 5★ 1246 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">37</td>
+                <td><a href="https://maps.google.com/?q=Fuchsia%20Spa%20La%20Encantada%202905%20E%20Skyline%20Dr%20Suite%20123%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Fuchsia Spa La Encantada</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">beauty salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">99</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.8★</td>
+                <td style="text-align:center">1038</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; beauty salon in Catalina Foothills, 4.8★ 1038 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">38</td>
+                <td><a href="https://maps.google.com/?q=Dentistry%20In%20Oro%20Valley%2010371%20N%20Oracle%20Rd%20%23101%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Dentistry In Oro Valley</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">dentist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">95</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">408</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; dentist in Oro Valley, 4.9★ 408 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">39</td>
+                <td><a href="https://maps.google.com/?q=Mountainside%20Dental%20Care%209000%20N%20Oracle%20Rd%20bldg%20b%2C%20Oro%20Valley%2C%20AZ%2085704%2C%20USA" target="_blank" rel="noopener"><strong>Mountainside Dental Care</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">dentist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">95</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">479</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; dentist in Oro Valley, 4.9★ 479 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">40</td>
+                <td><a href="https://maps.google.com/?q=Oro%20Valley%20Dental%20Arts%209000%20N%20Oracle%20Rd%20Building%20A%2C%20Oro%20Valley%2C%20AZ%2085704%2C%20USA" target="_blank" rel="noopener"><strong>Oro Valley Dental Arts</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">dentist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">95</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">252</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; dentist in Oro Valley, 5★ 252 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">41</td>
+                <td><a href="https://maps.google.com/?q=Bodycentral%20Physical%20Therapy%20-%20Oro%20Valley%20Physical%20Therapy%20Catalina%20%26%20North%20Tucson%208327%20N%20Oracle%20Rd%2C%20Tucson%2C%20AZ%2085704%2C%20USA" target="_blank" rel="noopener"><strong>Bodycentral Physical Therapy - Oro Valley Physical Therapy Catalina &amp; North Tucson</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">93</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">271</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; physiotherapist in Oro Valley, 4.9★ 271 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">42</td>
+                <td><a href="https://maps.google.com/?q=Sabino%20Hills%20Family%20Dentistry%209155%20E%20Tanque%20Verde%20Rd%20Ste%20127%2C%20Tucson%2C%20AZ%2085749%2C%20USA" target="_blank" rel="noopener"><strong>Sabino Hills Family Dentistry</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">dentist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">90</td>
+                <td>Tanque Verde / Sabino</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.8★</td>
+                <td style="text-align:center">202</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; dentist in Tanque Verde, 4.8★ 202 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">43</td>
+                <td><a href="https://maps.google.com/?q=Vein%20and%20Aesthetics%20of%20Tucson%204640%20E%20Sunrise%20Dr%20Ste%20217%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Vein and Aesthetics of Tucson</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">beauty salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">89</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.8★</td>
+                <td style="text-align:center">109</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; beauty salon in Catalina Foothills, 4.8★ 109 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">44</td>
+                <td><a href="https://maps.google.com/?q=Havven%20Beauty%20Salon%2010110%20N%20Oracle%20Rd%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Havven Beauty Salon</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">beauty salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">89</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">squarespace</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">386</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — squarespace; beauty salon in Oro Valley, 4.9★ 386 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">45</td>
+                <td><a href="https://maps.google.com/?q=Oro%20Valley%20Aesthetics%20%26%20Wellness%2010445%20N%20Oracle%20Rd%20Suite%20240%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank" rel="noopener"><strong>Oro Valley Aesthetics &amp; Wellness</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">beauty salon</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">89</td>
+                <td>Oro Valley</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">290</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; beauty salon in Oro Valley, 4.9★ 290 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">46</td>
+                <td><a href="https://maps.google.com/?q=Agility%20Spine%20and%20Sports%20Physical%20Therapy%208987%20E%20Tanque%20Verde%20Rd%20%23301%2C%20Tucson%2C%20AZ%2085749%2C%20USA" target="_blank" rel="noopener"><strong>Agility Spine and Sports Physical Therapy</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">physiotherapist</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">88</td>
+                <td>Tanque Verde / Sabino</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">227</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; physiotherapist in Tanque Verde, 4.9★ 227 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">47</td>
+                <td><a href="https://maps.google.com/?q=Dr.%20Dennis%20Weimer%2C%20Psychiatry%206450%20N%20Swan%20Rd%20%23106%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Dr. Dennis Weimer, Psychiatry</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">87</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">5★</td>
+                <td style="text-align:center">4</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; doctor in Catalina Foothills, 5★ 4 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">48</td>
+                <td><a href="https://maps.google.com/?q=Head%20to%20Toe%20Healthcare%2C%20PLC%207406%20N%20La%20Cholla%20Blvd%2C%20Tucson%2C%20AZ%2085741%2C%20USA" target="_blank" rel="noopener"><strong>Head to Toe Healthcare, PLC</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">doctor</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">85</td>
+                <td>Casas Adobes</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.6★</td>
+                <td style="text-align:center">245</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; doctor in Casas Adobes, 4.6★ 245 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">49</td>
+                <td><a href="https://maps.google.com/?q=Contigo%20Latin%20Kitchen%203770%20E%20Sunrise%20Dr%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>Contigo Latin Kitchen</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">restaurant</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">85</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">squarespace</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.5★</td>
+                <td style="text-align:center">966</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — squarespace; restaurant in Catalina Foothills, 4.5★ 966 reviews — redesign opportunity</td>
+            </tr>
+            <tr>
+                <td style="color:var(--text-muted);width:2.5rem;text-align:center">50</td>
+                <td><a href="https://maps.google.com/?q=RenewAll%20Wellness%20%26%20Aesthetics%204640%20E%20Sunrise%20Dr%20%23127%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank" rel="noopener"><strong>RenewAll Wellness &amp; Aesthetics</strong></a><br><span style="font-size:0.8rem;color:var(--text-muted)">spa</span></td>
+                <td><span style="display:inline-block;padding:0.1rem 0.45rem;border-radius:3px;font-size:0.75rem;font-weight:700;background:rgba(255,255,255,0.08);color:#ca8a04;border:1px solid #ca8a0440">T3 WP / Squarespace</span></td>
+                <td style="text-align:center;font-weight:600;color:#ca8a04">85</td>
+                <td>Catalina Foothills</td>
+                <td style="font-size:0.85rem;color:var(--text-muted)">wordpress</td>
+                <td><span style="color:var(--text-muted)">—</span></td>
+                <td style="text-align:center">4.9★</td>
+                <td style="text-align:center">60</td>
+                <td class="pain-text" style="font-size:0.8rem;color:var(--text-muted)">Tier 3 — wordpress; spa in Catalina Foothills, 4.9★ 60 reviews — redesign opportunity</td>
+            </tr>
+</tbody>
+</table>
+</div>
+
+<a href="index.html" class="back-link">&larr; All Neighborhoods</a>
+
+<footer>Generated from data/shortlist.csv &middot; Digital Disconnections Ltd</footer>
+</body>
+</html>
