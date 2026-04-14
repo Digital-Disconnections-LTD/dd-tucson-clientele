@@ -1,0 +1,75 @@
+business_name,neighborhood,category,source_file
+Pizza Hut,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Jimmy John's,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Papa Murphy's | Take 'N' Bake Pizza,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Subway,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Chipotle Mexican Grill,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Applebee's Grill + Bar,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Subway,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Wendy's,casas-adobes,restaurant,prospects/casas-adobes/casas-adobes-prospects.csv
+Circle K,casas-adobes,cafe,prospects/casas-adobes/casas-adobes-prospects.csv
+Starbucks Coffee Company,casas-adobes,cafe,prospects/casas-adobes/casas-adobes-prospects.csv
+Starbucks Coffee Company,casas-adobes,cafe,prospects/casas-adobes/casas-adobes-prospects.csv
+Starbucks Coffee Company,casas-adobes,cafe,prospects/casas-adobes/casas-adobes-prospects.csv
+McDonald's,casas-adobes,cafe,prospects/casas-adobes/casas-adobes-prospects.csv
+Starbucks Coffee Company,casas-adobes,cafe,prospects/casas-adobes/casas-adobes-prospects.csv
+Starbucks Coffee Company,casas-adobes,cafe,prospects/casas-adobes/casas-adobes-prospects.csv
+Walmart Supercenter,casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Walmart Bakery,casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Whole Foods Market,casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Walmart Neighborhood Market,casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Dunkin',casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Safeway,casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Safeway Bakery,casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Costco Bakery,casas-adobes,bakery,prospects/casas-adobes/casas-adobes-prospects.csv
+Domino's Pizza,casas-adobes,meal_delivery,prospects/casas-adobes/casas-adobes-prospects.csv
+Domino's Pizza,casas-adobes,meal_delivery,prospects/casas-adobes/casas-adobes-prospects.csv
+Little Caesars Pizza,casas-adobes,meal_delivery,prospects/casas-adobes/casas-adobes-prospects.csv
+Circle K,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+Sonic Drive-In,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+Subway,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+eegee's,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+Shake Shack Casas Adobes Plaza,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+Five Guys,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+Sonic Drive-In,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+Jersey Mike's Subs,casas-adobes,meal_takeaway,prospects/casas-adobes/casas-adobes-prospects.csv
+Great Clips,casas-adobes,hair_salon,prospects/casas-adobes/casas-adobes-prospects.csv
+SmartStyle,casas-adobes,hair_salon,prospects/casas-adobes/casas-adobes-prospects.csv
+Sport Clips Haircuts of Oro Valley-Oracle Crossing,casas-adobes,barber_shop,prospects/casas-adobes/casas-adobes-prospects.csv
+Supercuts,casas-adobes,barber_shop,prospects/casas-adobes/casas-adobes-prospects.csv
+Supercuts,casas-adobes,barber_shop,prospects/casas-adobes/casas-adobes-prospects.csv
+Bath & Body Works,casas-adobes,clothing_store,prospects/casas-adobes/casas-adobes-prospects.csv
+Walgreens,casas-adobes,clothing_store,prospects/casas-adobes/casas-adobes-prospects.csv
+Walgreens,casas-adobes,clothing_store,prospects/casas-adobes/casas-adobes-prospects.csv
+CVS,casas-adobes,clothing_store,prospects/casas-adobes/casas-adobes-prospects.csv
+Walgreens,casas-adobes,clothing_store,prospects/casas-adobes/casas-adobes-prospects.csv
+Spirit Halloween,casas-adobes,clothing_store,prospects/casas-adobes/casas-adobes-prospects.csv
+Whole Foods Market Floral,casas-adobes,florist,prospects/casas-adobes/casas-adobes-prospects.csv
+Walmart Auto Care Center,casas-adobes,car_repair,prospects/casas-adobes/casas-adobes-prospects.csv
+AutoZone Auto Parts,casas-adobes,car_repair,prospects/casas-adobes/casas-adobes-prospects.csv
+O'Reilly Auto Parts,casas-adobes,car_repair,prospects/casas-adobes/casas-adobes-prospects.csv
+Midas,casas-adobes,car_repair,prospects/casas-adobes/casas-adobes-prospects.csv
+Firestone Complete Auto Care,casas-adobes,car_repair,prospects/casas-adobes/casas-adobes-prospects.csv
+Key Center at The Home Depot,casas-adobes,locksmith,prospects/casas-adobes/casas-adobes-prospects.csv
+Circle K,sam-hughes-university,cafe,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Starbucks Coffee Company,sam-hughes-university,cafe,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Starbucks Coffee Company,sam-hughes-university,cafe,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Starbucks Coffee Company,sam-hughes-university,cafe,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Panera Bread,sam-hughes-university,cafe,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+7-Eleven,sam-hughes-university,cafe,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+McDonald's,sam-hughes-university,cafe,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Safeway,sam-hughes-university,bakery,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Safeway Bakery,sam-hughes-university,bakery,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Domino's Pizza,sam-hughes-university,meal_delivery,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Domino's Pizza,sam-hughes-university,meal_delivery,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Little Caesars Pizza,sam-hughes-university,meal_delivery,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Sonic Drive-In,sam-hughes-university,meal_takeaway,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Subway,sam-hughes-university,meal_takeaway,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Subway,sam-hughes-university,meal_takeaway,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Supercuts,sam-hughes-university,hair_salon,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Gadabout SalonSpas - Speedway,sam-hughes-university,nail_salon,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+CVS,sam-hughes-university,clothing_store,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Zia Records (Speedway - Tucson),sam-hughes-university,book_store,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+AutoZone Auto Parts,sam-hughes-university,car_repair,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Ace Hardware,sam-hughes-university,locksmith,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
+Key Center at The Home Depot,sam-hughes-university,locksmith,prospects/sam-hughes-university/sam-hughes-university-prospects.csv
