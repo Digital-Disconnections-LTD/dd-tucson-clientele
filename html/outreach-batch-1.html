@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach Batch 1 — Tucson Tier 1</title>
+<style>
+:root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #60a5fa;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --orange: #f97316;
+    --purple: #a855f7;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+.subtitle { color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.95rem; }
+.back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+.meta-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.meta-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.meta-chip strong { color: var(--text); }
+
+.pitch-note {
+    background: #1c2a1f;
+    border: 1px solid #2a4a30;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: #86efac;
+    line-height: 1.7;
+}
+.pitch-note strong { color: #bbf7d0; }
+
+.cards {
+    display: grid;
+    gap: 1rem;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem 1.5rem;
+    align-items: start;
+}
+
+.card-left {}
+.card-right { text-align: right; }
+
+.biz-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.biz-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.6rem;
+}
+
+.biz-meta span { display: flex; align-items: center; gap: 0.25rem; }
+
+.domain {
+    font-family: monospace;
+    font-size: 0.8rem;
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    color: var(--accent);
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.phone-link {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--green);
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.no-phone {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.action-links {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    background: var(--bg);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn:hover { background: var(--surface-hover); color: var(--text); text-decoration: none; }
+
+.status-badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.status-not_contacted { background: #1e2d3d; color: #94a3b8; border: 1px solid #334155; }
+.status-called        { background: #1c2a40; color: #60a5fa; border: 1px solid #1e40af; }
+.status-voicemail     { background: #2a2010; color: #fbbf24; border: 1px solid #92400e; }
+.status-reached       { background: #1c3a28; color: #4ade80; border: 1px solid #166534; }
+.status-meeting_scheduled { background: #2a1c40; color: #c084fc; border: 1px solid #6b21a8; }
+.status-not_interested { background: #2a1414; color: #f87171; border: 1px solid #991b1b; }
+.status-converted     { background: #14291e; color: #34d399; border: 1px solid #065f46; }
+
+.score-pill {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: #1e293b;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    color: var(--text-muted);
+}
+
+.stars { color: #f59e0b; }
+
+.zone-tag {
+    font-size: 0.75rem;
+    background: #172554;
+    color: #93c5fd;
+    border: 1px solid #1e3a8a;
+    border-radius: 4px;
+    padding: 0.1rem 0.5rem;
+}
+
+.note-row {
+    grid-column: 1 / -1;
+    font-size: 0.82rem;
+    color: #f59e0b;
+    background: #1c1a0d;
+    border: 1px solid #44380a;
+    border-radius: 5px;
+    padding: 0.4rem 0.75rem;
+}
+
+.progress-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+}
+.progress-bar-wrap h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.progress-bar-outer {
+    height: 10px;
+    background: var(--bg);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+}
+.progress-bar-inner {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 5px;
+    width: 0%;
+    transition: width 0.5s;
+}
+.progress-label { font-size: 0.82rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="shortlist.html">← Back to shortlist</a>
+<h1>Outreach Batch 1</h1>
+<p class="subtitle">Tier 1 · No website · Catalina Foothills + Oro Valley · Top 10 by score</p>
+
+<div class="meta-bar">
+  <div class="meta-chip">Authorized by <strong>Cassidy</strong></div>
+  <div class="meta-chip">Wave <strong>1</strong> · Batch <strong>1 of 2</strong></div>
+  <div class="meta-chip">Target: <strong>phone or in-person</strong></div>
+  <div class="meta-chip">Goal: <strong>book follow-up</strong></div>
+</div>
+
+<div class="pitch-note">
+  <strong>Pitch angle:</strong> "You're visible on Google but leaving patients/clients on the table without a website you own.
+  We build professional sites for local practices — one-time fee, no monthly platform bill, no client data going to Google or Wix."
+  See <code>templates/pitch-tier1.md</code> for the full script.
+</div>
+
+<div class="progress-bar-wrap">
+  <h3>Batch Progress</h3>
+  <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:0%"></div></div>
+  <div class="progress-label">0 / 10 contacted</div>
+</div>
+
+<div class="cards">
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Herbert M. Grossman, M.D.</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Catalina Foothills</span></span>
+        <span>Doctor</span>
+        <span class="stars">★</span><span>5.0 · 7 reviews</span>
+        <span class="score-pill">Score 132</span>
+      </div>
+      <div class="domain">herbertmgrossmanmd.com</div>
+      <div class="biz-meta">4729 E Sunrise Dr POB 233, Tucson, AZ 85718</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15207427724">+1 520-742-7724</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Herbert%20M.%20Grossman%2C%20M.D.%204729%20E%20Sunrise%20Dr%20POB%20233%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Bone</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Catalina Foothills</span></span>
+        <span>Doctor</span>
+        <span class="stars">★</span><span>5.0 · 19 reviews</span>
+        <span class="score-pill">Score 132</span>
+      </div>
+      <div class="domain">bonetucson.com</div>
+      <div class="biz-meta">4640 E Sunrise Dr #100, Tucson, AZ 85718</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <span class="no-phone">No phone on file — walk in or find directly</span>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Bone%204640%20E%20Sunrise%20Dr%20%23100%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Follow Through Fitness</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Catalina Foothills</span></span>
+        <span>Physiotherapist</span>
+        <span class="stars">★</span><span>5.0 · 5 reviews</span>
+        <span class="score-pill">Score 130</span>
+      </div>
+      <div class="domain">followthroughfitnesstucson.com</div>
+      <div class="biz-meta">5501 N Swan Rd #150, Tucson, AZ 85718</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15204051837">+1 520-405-1837</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Follow%20Through%20Fitness%205501%20N%20Swan%20Rd%20%23150%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Wildflower Med Spa LLC</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Catalina Foothills</span></span>
+        <span>Spa</span>
+        <span class="stars">★</span><span>4.6 · 19 reviews</span>
+        <span class="score-pill">Score 127</span>
+      </div>
+      <div class="domain">wildflowermedspatucson.com</div>
+      <div class="biz-meta">4640 E Sunrise Dr #100, Tucson, AZ 85718</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15205438970">+1 520-543-8970</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Wildflower%20Med%20Spa%20LLC%204640%20E%20Sunrise%20Dr%20%23100%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+    <div class="note-row">⚠ Same address + phone as Jouvance Med Spa below — two businesses in one suite. Approach separately.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Jouvance Med Spa</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Catalina Foothills</span></span>
+        <span>Spa</span>
+        <span class="stars">★</span><span>5.0 · 18 reviews</span>
+        <span class="score-pill">Score 127</span>
+      </div>
+      <div class="domain">jouvancemedspa.com</div>
+      <div class="biz-meta">4640 E Sunrise Dr #100, Tucson, AZ 85718</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15205438970">+1 520-543-8970</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Jouvance%20Med%20Spa%204640%20E%20Sunrise%20Dr%20%23100%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+    <div class="note-row">⚠ Same address + phone as Wildflower Med Spa above — two businesses in one suite. Approach separately.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Dr. Joseph Larsen</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Oro Valley</span></span>
+        <span>Dentist</span>
+        <span class="stars">★</span><span>5.0 · 1 review</span>
+        <span class="score-pill">Score 127</span>
+      </div>
+      <div class="domain">drjosephlarsen.com</div>
+      <div class="biz-meta">9000 N Oracle Rd, Oro Valley, AZ 85704</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15202972007">+1 520-297-2007</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Dr.%20Joseph%20Larsen%209000%20N%20Oracle%20Rd%2C%20Oro%20Valley%2C%20AZ%2085704%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Joshua Crosby</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Oro Valley</span></span>
+        <span>Dentist</span>
+        <span class="stars">★</span><span>5.0 · 2 reviews</span>
+        <span class="score-pill">Score 127</span>
+      </div>
+      <div class="domain">joshuacrosbytucson.com</div>
+      <div class="biz-meta">9000 N Oracle Rd Ste 200, Tucson, AZ 85704</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15202975422">+1 520-297-5422</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Joshua%20Crosby%209000%20N%20Oracle%20Rd%20Ste%20200%2C%20Tucson%2C%20AZ%2085704%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Dr. Randall W. Fehr, MD</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Oro Valley</span></span>
+        <span>Doctor</span>
+        <span class="stars">★</span><span>5.0 · 4 reviews</span>
+        <span class="score-pill">Score 127</span>
+      </div>
+      <div class="domain">drrandallwfehrmd.com</div>
+      <div class="biz-meta">10371 N Oracle Rd Suite 204, Oro Valley, AZ 85737</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15208773336">+1 520-877-3336</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Dr.%20Randall%20W.%20Fehr%2C%20MD%2010371%20N%20Oracle%20Rd%20Suite%20204%2C%20Oro%20Valley%2C%20AZ%2085737%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Will Polec, NMD</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Catalina Foothills</span></span>
+        <span>Doctor (Naturopathic)</span>
+        <span class="stars">★</span><span>3.9 · 7 reviews</span>
+        <span class="score-pill">Score 126</span>
+      </div>
+      <div class="domain">willpolecnmd.com</div>
+      <div class="biz-meta">6262 N Swan Rd Ste 120, Tucson, AZ 85718</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15202994700">+1 520-299-4700</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Will%20Polec%2C%20NMD%206262%20N%20Swan%20Rd%20Ste%20120%2C%20Tucson%2C%20AZ%2085718%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-left">
+      <div class="biz-name">Franklyn Pfeil</div>
+      <div class="biz-meta">
+        <span><span class="zone-tag">Oro Valley</span></span>
+        <span>Physiotherapist</span>
+        <span class="stars">★</span><span>5.0 · 1 review</span>
+        <span class="score-pill">Score 125</span>
+      </div>
+      <div class="domain">franklynpfeil.com</div>
+      <div class="biz-meta">10550 N La Cañada Dr Ste 160, Tucson, AZ 85737</div>
+    </div>
+    <div class="card-right">
+      <div class="status-badge status-not_contacted">Not contacted</div>
+      <a class="phone-link" href="tel:+15203210204">+1 520-321-0204</a>
+      <div class="action-links">
+        <a class="btn" href="https://maps.google.com/?q=Franklyn%20Pfeil%2010550%20N%20La%20Ca%C3%B1ada%20Dr%20Ste%20160%2C%20Tucson%2C%20AZ%2085737%2C%20USA" target="_blank">Maps</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top: 2rem; font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1rem;">
+  Update <code>data/outreach-batch-1.csv</code> with status after each contact. Batch 2 (remaining 10 Tier 1 prospects) releases after Cassidy reviews response rate from this batch.
+</div>
+
+</body>
+</html>
