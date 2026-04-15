@@ -454,3 +454,32 @@ Carolina's Mexican Food  # AZ chain
 Carolinas Mexican
 Whataburger    # Southwest/South QSR chain
 Circle K       # Already listed but AZ-headquartered — ensure present
+
+# -------------------------------------------------------
+# LUXURY OUTLET / FACTORY STORE BRANDS
+# Added: DIG-791 Wave 2 — found in Outlets at Marana (Dove Mountain)
+# These appear as "[Brand] Factory Store", "[Brand] Outlet", etc.
+# All are national chain brands with no local web presence need.
+# -------------------------------------------------------
+Ann Taylor      # Ann Taylor Factory Store
+Tommy Hilfiger  # outlet stores
+Calvin Klein    # outlet stores
+COACH Outlet    # luxury outlet
+Coach Outlet
+Kate Spade Outlet  # luxury outlet
+Kate Spade      # HIGH FP RISK — check against local "Kate's" businesses
+GUESS Factory   # outlet
+Polo Ralph Lauren  # outlet stores
+Ralph Lauren    # HIGH FP RISK — check against local names
+Disney Store    # national chain
+KAY Outlet      # Kay Jewelers outlet
+Sunglass Hut    # Luxottica chain
+Claire's        # teen accessories chain
+Levi's Outlet   # outlet stores
+LOFT Outlet     # LOFT fashion outlet
+Michael Kors    # luxury outlet — HIGH FP RISK check vs "Michael" locals
+Banana Republic # outlet stores
+Gap Factory     # outlet stores
+J.Crew Factory  # outlet stores
+Brooks Brothers # outlet stores
+Samsonite       # luggage chain outlet

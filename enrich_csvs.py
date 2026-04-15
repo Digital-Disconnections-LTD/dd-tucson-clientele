@@ -200,9 +200,21 @@ def enrich_file(path):
         url_field = row.get('website_url', '').strip()
         score = row.get('quality_score', '').strip()
         platform_cur = row.get('platform', '').strip()
+        registrar_cur = row.get('registrar', '').strip()
+        domain_suggestions_cur = row.get('domain_suggestions', '').strip()
         domain = extract_domain(url_field)
 
+        # Skip rows already fully enriched — avoids re-running whois on Wave 1 data
+        already_enriched = registrar_cur and registrar_cur.lower() not in ('', 'unknown', 'error', 'timeout')
+        already_has_suggestions = domain_suggestions_cur and domain_suggestions_cur not in ('', 'all taken')
+
         if domain:
+            if already_enriched and platform_cur.lower() not in ('unknown', '', 'none', 'n/a'):
+                print(f"  [{name}] already enriched — skipping", flush=True)
+                row.setdefault('domain_suggestions', '')
+                summary.append((name, 'skipped', f"already enriched: {registrar_cur}, {platform_cur}"))
+                enriched.append(row)
+                continue
             print(f"  [{name}] has domain: {domain}", flush=True)
             registrar = get_registrar(domain)
             time.sleep(WHOIS_DELAY)
